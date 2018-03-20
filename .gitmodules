@@ -1,0 +1,3 @@
+[submodule "modules/BMI160_driver"]
+	path = modules/BMI160_driver
+	url = https://github.com/BoschSensortec/BMI160_driver.git
