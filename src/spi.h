@@ -15,42 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #pragma once
 
-#include <errno.h>
 #include <stdint.h>
 
-class ImuData {
+class SPI {
 public:
-  ImuData() {}
-  ~ImuData() {}
+  SPI(const char *device);
+  virtual ~SPI();
+  int init(uint8_t mode, uint32_t freq);
+  int transfer(const uint8_t *send_buffer, uint16_t send_len,
+               uint8_t *recv_buffer, uint16_t recv_len);
 
-  uint32_t sec;
-  uint32_t nsec;
-  double accel[3];   // in m/s^2
-  double angrate[3]; // in rad/sec
-  double orientation[9];
-};
-
-class ImuDevice {
-public:
-  ImuDevice() {}
-  virtual ~ImuDevice() {}
-
-  enum State {
-    STATE_ERROR = -1,
-    STATE_IDLE = 0,
-    STATE_INIT = 1,
-    STATE_RUN = 2,
-  };
-
-  virtual int init() = 0;
-  virtual int uninit() = 0;
-  virtual int start() { return -ENOTSUP; }
-  virtual int stop() { return -ENOTSUP; }
-  virtual int read(ImuData &value) { return -ENOTSUP; }
-  virtual int getState() { return -ENOTSUP; }
-  virtual int getCovariance(double &orient, double &angVel, double &linAccel) {
-    return -ENOTSUP;
-  }
+private:
+  char *_device;
+  int _fd = -1;
+  uint32_t _freq;
 };

@@ -118,6 +118,7 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  modules/BMI160_driver
 )
 
 ## Declare a C++ library
@@ -133,7 +134,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(${PROJECT_NAME}_node src/aero_imu_node.cpp src/ImuDeviceBmi160.cpp)
+add_executable(${PROJECT_NAME}_node src/aero_imu_node.cpp src/ImuDeviceBmi160.cpp src/spi.cpp modules/BMI160_driver/bmi160.c)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

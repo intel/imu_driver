@@ -117,17 +117,19 @@ int AeroImuNode::readData(sensor_msgs::Imu &data) {
   data.angular_velocity.y = value.angrate[1];
   data.angular_velocity.z = value.angrate[2];
 
-  tf::Quaternion quat;
-  (tf::Matrix3x3(-1, 0, 0, 0, 1, 0, 0, 0, -1) *
-   tf::Matrix3x3(
-       value.orientation[0], value.orientation[3], value.orientation[6],
-       value.orientation[1], value.orientation[4], value.orientation[7],
-       value.orientation[2], value.orientation[5], value.orientation[8]))
-      .getRotation(quat);
+  /*
+    tf::Quaternion quat;
+    (tf::Matrix3x3(-1, 0, 0, 0, 1, 0, 0, 0, -1) *
+     tf::Matrix3x3(
+         value.orientation[0], value.orientation[3], value.orientation[6],
+         value.orientation[1], value.orientation[4], value.orientation[7],
+         value.orientation[2], value.orientation[5], value.orientation[8]))
+        .getRotation(quat);
 
-  tf::quaternionTFToMsg(quat, data.orientation);
+    tf::quaternionTFToMsg(quat, data.orientation);
+  */
 
-  data.header.stamp = ros::Time::now().fromNSec(value.time);
+  data.header.stamp = ros::Time::now();
 }
 
 bool AeroImuNode::spin() {
