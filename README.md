@@ -1,2 +1,2 @@
-# aero_imu
-ROS driver for Intel Aero IMU sensor
+# imu_driver
+ROS driver for IMU sensor devices
