@@ -3,21 +3,21 @@
  * SPDX-License-Identifier: BSD-3-Clause
 *********************************************************************/
 
-// ROS Node for Aero IMU Sensor
+// ROS Node for IMU Sensor Devices
 #include "sensor_msgs/Imu.h"
 #include "tf/transform_datatypes.h"
 #include <ros/ros.h>
 
 #include "ImuDeviceBmi160.h"
 
-class AeroImuNode {
+class ImuDriverNode {
 public:
   ros::NodeHandle mNH;
   ros::Publisher mPubImuMsg;
   sensor_msgs::Imu mImuMsg;
   ImuDevice *mImuDev;
-  AeroImuNode(ros::NodeHandle h);
-  ~AeroImuNode();
+  ImuDriverNode(ros::NodeHandle h);
+  ~ImuDriverNode();
   int start();
   int stop();
   bool spin();
@@ -25,8 +25,8 @@ public:
   int readData(sensor_msgs::Imu &data);
 };
 
-AeroImuNode::AeroImuNode(ros::NodeHandle h) : mNH(h) {
-  ROS_INFO_STREAM("ROS Node aero_imu");
+ImuDriverNode::ImuDriverNode(ros::NodeHandle h) : mNH(h) {
+  ROS_INFO_STREAM("ROS Node imu_driver_node");
 
   // Create Node Publishers
   mPubImuMsg = mNH.advertise<sensor_msgs::Imu>("imu/data_raw", 5);
@@ -56,13 +56,13 @@ AeroImuNode::AeroImuNode(ros::NodeHandle h) : mNH(h) {
   mImuMsg.orientation_covariance[8] = covOrient;
 }
 
-AeroImuNode::~AeroImuNode() {
-  ROS_INFO_STREAM("~AeroImuNode");
+ImuDriverNode::~ImuDriverNode() {
+  ROS_INFO_STREAM("~ImuDriverNode");
 
   stop();
 }
 
-int AeroImuNode::start() {
+int ImuDriverNode::start() {
   ROS_INFO_STREAM("start");
 
   mImuDev->init();
@@ -70,7 +70,7 @@ int AeroImuNode::start() {
   return 0;
 }
 
-int AeroImuNode::stop() {
+int ImuDriverNode::stop() {
   ROS_INFO_STREAM("stop");
 
   mImuDev->stop();
@@ -78,7 +78,7 @@ int AeroImuNode::stop() {
   return 0;
 }
 
-int AeroImuNode::pubData() {
+int ImuDriverNode::pubData() {
   ROS_INFO_STREAM("pubData");
 
   // read
@@ -86,7 +86,7 @@ int AeroImuNode::pubData() {
   mPubImuMsg.publish(mImuMsg);
 }
 
-int AeroImuNode::readData(sensor_msgs::Imu &data) {
+int ImuDriverNode::readData(sensor_msgs::Imu &data) {
   uint64_t time;
   double accel[3];
   double angrate[3];
@@ -119,7 +119,7 @@ int AeroImuNode::readData(sensor_msgs::Imu &data) {
   data.header.stamp = ros::Time::now();
 }
 
-bool AeroImuNode::spin() {
+bool ImuDriverNode::spin() {
   while (!ros::isShuttingDown()) // Using ros::isShuttingDown to avoid
                                  // restarting the node during a shutdown.
   {
@@ -144,12 +144,12 @@ bool AeroImuNode::spin() {
 
 int main(int argc, char **argv) {
   // Initialize the ROS system
-  ros::init(argc, argv, "aero_imu");
+  ros::init(argc, argv, "imu_driver");
 
   ros::NodeHandle nh;
 
-  AeroImuNode ain(nh);
-  ain.spin();
+  ImuDriverNode idn(nh);
+  idn.spin();
 
   return (0);
 }
