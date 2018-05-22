@@ -41,7 +41,11 @@ ImuDriverNode::ImuDriverNode(ros::NodeHandle h) : mNH(h) {
   mImuMsg.header.frame_id = "imu";
 
   double covOrient, covAngVel, covLinAccel;
-  mImuDev->getCovariance(covOrient, covAngVel, covLinAccel);
+  if (mImuDev->getCovariance(covOrient, covAngVel, covLinAccel)) {
+    covOrient = 0;
+    covAngVel = 0;
+    covLinAccel = 0;
+  }
 
   mImuMsg.linear_acceleration_covariance[0] = covLinAccel;
   mImuMsg.linear_acceleration_covariance[4] = covLinAccel;
@@ -103,6 +107,8 @@ int ImuDriverNode::readData(sensor_msgs::Imu &data) {
   data.angular_velocity.x = value.angrate[0];
   data.angular_velocity.y = value.angrate[1];
   data.angular_velocity.z = value.angrate[2];
+
+  data.orientation_covariance[0] = -1;
 
   /*
     tf::Quaternion quat;
