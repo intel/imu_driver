@@ -83,7 +83,7 @@ int ImuDriverNode::stop() {
 }
 
 int ImuDriverNode::pubData() {
-  ROS_INFO_STREAM("pubData");
+  // ROS_INFO_STREAM("pubData");
 
   // read
   readData(mImuMsg);

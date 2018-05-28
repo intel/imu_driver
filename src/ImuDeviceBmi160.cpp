@@ -61,7 +61,7 @@ int ImuDeviceBmi160::start() {
   int8_t retBmi = BMI160_OK;
   retBmi = bmi160_init(&mSensor);
   if (retBmi != BMI160_OK) {
-    printf("sensor initialization failed\n");
+    log_debug("sensor initialization failed\n");
     return -1;
   }
 
@@ -135,10 +135,10 @@ int ImuDeviceBmi160::read(ImuData &value) {
   */
   // value.orientation[] = ?
 
-  printf("[%d] Accel data: %f %f %f\n", accel.sensortime, value.accel[0],
-         value.accel[1], value.accel[2]);
-  printf("[%d] Gyro data: %f %f %f\n", gyro.sensortime, value.angrate[0],
-         value.angrate[1], value.angrate[2]);
+  // log_debug("[%d] Accel data: %f %f %f\n", accel.sensortime, value.accel[0],
+  //       value.accel[1], value.accel[2]);
+  // log_debug("[%d] Gyro data: %f %f %f\n", gyro.sensortime, value.angrate[0],
+  //        value.angrate[1], value.angrate[2]);
 
   return ret;
 }
@@ -190,7 +190,7 @@ int ImuDeviceBmi160::setState(int state) {
 }
 
 int ImuDeviceBmi160::getState() {
-  log_debug("%s", __func__);
+  // log_debug("%s", __func__);
   return mState;
 }
 
@@ -215,7 +215,7 @@ int8_t ImuDeviceBmi160::writeRegister(uint8_t dev_addr, uint8_t reg,
   int ret = 0;
   uint8_t buffer[2];
 
-  // printf("%x: %d\n", reg, *data);
+  // log_debug("%x: %d\n", reg, *data);
 
   buffer[0] = reg;
   buffer[1] = *data;
@@ -229,7 +229,7 @@ int8_t ImuDeviceBmi160::readRegister(uint8_t dev_addr, uint8_t reg,
                                      uint8_t *recv_buffer, uint16_t recv_len) {
   int ret = 0;
 
-  // printf("%x\n", reg & 0x7f);
+  // log_debug("%x\n", reg & 0x7f);
   reg |= BMI160_READ_FLAG;
   if (mSpi->transfer(&reg, 1, recv_buffer, recv_len) != (recv_len + 1))
     ret = -1;
