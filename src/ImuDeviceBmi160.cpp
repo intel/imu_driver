@@ -5,6 +5,7 @@
 
 #include <cassert>
 #include <signal.h>
+#include <sys/time.h>
 #include <unistd.h>
 
 #include "ImuDeviceBmi160.h"
@@ -66,7 +67,7 @@ int ImuDeviceBmi160::start() {
   }
 
   /* Select the Output data rate, range of accelerometer sensor */
-  mSensor.accel_cfg.odr = BMI160_ACCEL_ODR_1600HZ;
+  mSensor.accel_cfg.odr = BMI160_ACCEL_ODR_200HZ;
   mSensor.accel_cfg.range = BMI160_ACCEL_RANGE_2G;
   mSensor.accel_cfg.bw = BMI160_ACCEL_BW_NORMAL_AVG4;
 
@@ -74,7 +75,7 @@ int ImuDeviceBmi160::start() {
   mSensor.accel_cfg.power = BMI160_ACCEL_NORMAL_MODE;
 
   /* Select the Output data rate, range of Gyroscope sensor */
-  mSensor.gyro_cfg.odr = BMI160_GYRO_ODR_3200HZ;
+  mSensor.gyro_cfg.odr = BMI160_GYRO_ODR_200HZ;
   mSensor.gyro_cfg.range = BMI160_GYRO_RANGE_250_DPS;
   mSensor.gyro_cfg.bw = BMI160_GYRO_BW_NORMAL_MODE;
 
@@ -114,7 +115,16 @@ int ImuDeviceBmi160::read(ImuData &value) {
       (BMI160_ACCEL_SEL | BMI160_GYRO_SEL | BMI160_TIME_SEL), &accel, &gyro,
       &mSensor);
 
-  value.sec = accel.sensortime;
+  struct timeval timeofday;
+  gettimeofday(&timeofday, NULL);
+  value.sec = timeofday.tv_sec;
+  value.nsec = timeofday.tv_usec * 1000;
+
+#if DEBUG
+  log_debug("System Timestamp %ld.%06ld", timeofday.tv_sec, timeofday.tv_usec);
+  log_debug("Buffer Timestamp(us) %f %f", 39.0625 * accel.sensortime,
+            39.0625 * gyro.sensortime);
+#endif
 
   value.accel[0] = (((double)accel.x) / G_TO_LSB) * 9.80655;
   value.accel[1] = (((double)accel.y) / G_TO_LSB) * 9.80655;

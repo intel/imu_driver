@@ -122,7 +122,7 @@ int ImuDriverNode::readData(sensor_msgs::Imu &data) {
     tf::quaternionTFToMsg(quat, data.orientation);
   */
 
-  data.header.stamp = ros::Time::now();
+  data.header.stamp = ros::Time(value.sec, value.nsec);
 }
 
 bool ImuDriverNode::spin() {
@@ -136,8 +136,7 @@ bool ImuDriverNode::spin() {
         ros::spinOnce();
       }
     } else {
-      // No need for diagnostic here since a broadcast occurs in start
-      // when there is an error.
+      // retry start
       usleep(1000000);
       ros::spinOnce();
     }
