@@ -29,7 +29,7 @@
 
 SPI *ImuDeviceBmi160::mSpi = nullptr;
 
-ImuDeviceBmi160::ImuDeviceBmi160() : mState(STATE_IDLE) {}
+ImuDeviceBmi160::ImuDeviceBmi160() : mState(STATE_IDLE), mSensor{0} {}
 
 ImuDeviceBmi160::~ImuDeviceBmi160() {}
 
