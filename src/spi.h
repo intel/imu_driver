@@ -18,5 +18,5 @@ public:
 private:
   char *_device;
   int _fd = -1;
-  uint32_t _freq;
+  uint32_t _freq = 1000000;
 };

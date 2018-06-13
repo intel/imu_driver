@@ -16,7 +16,7 @@ public:
   ros::Publisher mPubImuMsg;
   sensor_msgs::Imu mImuMsg;
   ImuDevice *mImuDev;
-  ImuDriverNode(ros::NodeHandle h);
+  ImuDriverNode(ros::NodeHandle &h);
   ~ImuDriverNode();
   int start();
   int stop();
@@ -25,7 +25,7 @@ public:
   int readData(sensor_msgs::Imu &data);
 };
 
-ImuDriverNode::ImuDriverNode(ros::NodeHandle h) : mNH(h) {
+ImuDriverNode::ImuDriverNode(ros::NodeHandle &h) : mNH(h) {
   ROS_INFO_STREAM("ROS Node imu_driver_node");
 
   // Create Node Publishers
@@ -88,6 +88,8 @@ int ImuDriverNode::pubData() {
   // read
   readData(mImuMsg);
   mPubImuMsg.publish(mImuMsg);
+
+  return 0;
 }
 
 int ImuDriverNode::readData(sensor_msgs::Imu &data) {
@@ -123,6 +125,8 @@ int ImuDriverNode::readData(sensor_msgs::Imu &data) {
   */
 
   data.header.stamp = ros::Time(value.sec, value.nsec);
+
+  return 0;
 }
 
 bool ImuDriverNode::spin() {

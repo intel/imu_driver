@@ -13,8 +13,8 @@ public:
   ImuData() {}
   ~ImuData() {}
 
-  uint32_t sec;
-  uint32_t nsec;
+  uint32_t sec = 0;
+  uint32_t nsec = 0;
   double accel[3];   // in m/s^2
   double angrate[3]; // in rad/sec
   double orientation[9];
