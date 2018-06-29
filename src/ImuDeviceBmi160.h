@@ -27,7 +27,6 @@ public:
 
 private:
   int setState(int state);
-  static void intHandler(int dummy);
   static void delayMs(uint32_t period);
   static int8_t writeRegister(uint8_t dev_addr, uint8_t reg, uint8_t *data,
                               uint16_t len);
