@@ -33,20 +33,20 @@ ImuDeviceBmi160::ImuDeviceBmi160() : mState(STATE_IDLE), mSensor{0} {}
 
 ImuDeviceBmi160::~ImuDeviceBmi160() {}
 
-int ImuDeviceBmi160::init() {
+ImuDevice::Status ImuDeviceBmi160::init() {
   log_debug("%s", __func__);
   setState(STATE_INIT);
-  return 0;
+  return Status::SUCCESS;
 }
 
-int ImuDeviceBmi160::uninit() {
+ImuDevice::Status ImuDeviceBmi160::uninit() {
   log_debug("%s", __func__);
   setState(STATE_IDLE);
-  return 0;
+  return Status::SUCCESS;
 }
 
-int ImuDeviceBmi160::start() {
-  int ret = 0;
+ImuDevice::Status ImuDeviceBmi160::start() {
+  Status ret = Status::SUCCESS;
   log_debug("%s", __func__);
   mSpi = new SPI("/dev/spidev3.0");
   mSpi->init(0, 1 * 1000 * 1000);
@@ -62,7 +62,7 @@ int ImuDeviceBmi160::start() {
   retBmi = bmi160_init(&mSensor);
   if (retBmi != BMI160_OK) {
     log_debug("sensor initialization failed\n");
-    return -1;
+    return Status::ERROR_UNKNOWN;
   }
 
   /* Select the Output data rate, range of accelerometer sensor */
@@ -85,27 +85,27 @@ int ImuDeviceBmi160::start() {
   retBmi = bmi160_set_sens_conf(&mSensor);
   if (retBmi != BMI160_OK) {
     printf("sensor configuration failed\n");
-    return -1;
+    return Status::ERROR_UNKNOWN;
   }
 
   setState(STATE_RUN);
-  return 0;
+  return Status::SUCCESS;
 }
 
-int ImuDeviceBmi160::stop() {
+ImuDevice::Status ImuDeviceBmi160::stop() {
   log_debug("%s", __func__);
   delete mSpi;
   mSpi = nullptr;
   setState(STATE_INIT);
-  return 0;
+  return Status::SUCCESS;
 }
 
-int ImuDeviceBmi160::read(ImuData &value) {
-  int ret = 0;
+ImuDevice::Status ImuDeviceBmi160::read(ImuData &value) {
+  Status ret = Status::SUCCESS;
   if (STATE_RUN != getState()) {
     log_error("read() called in wrong state");
     assert(0);
-    return -1;
+    return Status::ERROR_UNKNOWN;
   }
   struct bmi160_sensor_data gyro;
   struct bmi160_sensor_data accel;
@@ -155,17 +155,17 @@ int ImuDeviceBmi160::read(ImuData &value) {
 /*
     IDLE <--> INIT <--> RUN
 */
-int ImuDeviceBmi160::setState(int state) {
-  int ret = 0;
+ImuDevice::Status ImuDeviceBmi160::setState(State state) {
+  Status ret = Status::SUCCESS;
   log_debug("%s", __func__);
 
   if (mState == state)
-    return 0;
+    return Status::SUCCESS;
 
   if (state == STATE_ERROR) {
     assert(0);
     mState = state;
-    return 0;
+    return Status::SUCCESS;
   }
 
   switch (mState) {
@@ -191,26 +191,26 @@ int ImuDeviceBmi160::setState(int state) {
 
   if (mState != state) {
     assert(0);
-    ret = -1;
+    ret = Status::ERROR_UNKNOWN;
     log_error("InValid State Transition");
   }
 
   return ret;
 }
 
-int ImuDeviceBmi160::getState() {
+ImuDevice::State ImuDeviceBmi160::getState() {
   // log_debug("%s", __func__);
   return mState;
 }
 
-int ImuDeviceBmi160::getCovariance(double &orient, double &angVel,
-                                   double &linAccel) {
+ImuDevice::Status ImuDeviceBmi160::getCovariance(double &orient, double &angVel,
+                                                 double &linAccel) {
   log_debug("%s", __func__);
   orient = 0;
   angVel = 0;
   linAccel = 0;
 
-  return 0;
+  return Status::SUCCESS;
 }
 
 void ImuDeviceBmi160::delayMs(uint32_t period) { usleep(period * 1000); }

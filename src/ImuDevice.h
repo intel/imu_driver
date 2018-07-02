@@ -25,6 +25,17 @@ public:
   ImuDevice() {}
   virtual ~ImuDevice() {}
 
+  enum class Status {
+    SUCCESS,
+    ERROR_UNKNOWN,
+    INVALID_ARGUMENT,
+    INVALID_STATE,
+    NO_MEMORY,
+    PERM_DENIED,
+    TIMED_OUT,
+    NOT_SUPPORTED
+  };
+
   enum State {
     STATE_ERROR = -1,
     STATE_IDLE = 0,
@@ -32,13 +43,14 @@ public:
     STATE_RUN = 2,
   };
 
-  virtual int init() = 0;
-  virtual int uninit() = 0;
-  virtual int start() { return -ENOTSUP; }
-  virtual int stop() { return -ENOTSUP; }
-  virtual int read(ImuData &value) { return -ENOTSUP; }
-  virtual int getState() { return -ENOTSUP; }
-  virtual int getCovariance(double &orient, double &angVel, double &linAccel) {
-    return -ENOTSUP;
+  virtual Status init() = 0;
+  virtual Status uninit() = 0;
+  virtual Status start() { return Status::NOT_SUPPORTED; }
+  virtual Status stop() { return Status::NOT_SUPPORTED; }
+  virtual Status read(ImuData &value) { return Status::NOT_SUPPORTED; }
+  virtual State getState() { return State::STATE_ERROR; }
+  virtual Status getCovariance(double &orient, double &angVel,
+                               double &linAccel) {
+    return Status::NOT_SUPPORTED;
   }
 };

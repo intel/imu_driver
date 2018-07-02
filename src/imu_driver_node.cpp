@@ -41,7 +41,8 @@ ImuDriverNode::ImuDriverNode(ros::NodeHandle &h) : mNH(h) {
   mImuMsg.header.frame_id = "imu";
 
   double covOrient, covAngVel, covLinAccel;
-  if (mImuDev->getCovariance(covOrient, covAngVel, covLinAccel)) {
+  if (mImuDev->getCovariance(covOrient, covAngVel, covLinAccel) !=
+      ImuDevice::Status::SUCCESS) {
     covOrient = 0;
     covAngVel = 0;
     covLinAccel = 0;
