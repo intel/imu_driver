@@ -48,7 +48,6 @@ int ImuDeviceBmi160::uninit() {
 int ImuDeviceBmi160::start() {
   int ret = 0;
   log_debug("%s", __func__);
-  signal(SIGINT, &ImuDeviceBmi160::intHandler);
   mSpi = new SPI("/dev/spidev3.0");
   mSpi->init(0, 1 * 1000 * 1000);
 
@@ -212,10 +211,6 @@ int ImuDeviceBmi160::getCovariance(double &orient, double &angVel,
   linAccel = 0;
 
   return 0;
-}
-
-void ImuDeviceBmi160::intHandler(int dummy) {
-  // setState(STATE_ERROR);
 }
 
 void ImuDeviceBmi160::delayMs(uint32_t period) { usleep(period * 1000); }
