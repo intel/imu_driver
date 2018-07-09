@@ -55,12 +55,7 @@ public:
   /**
    *  Possible states of the object.
    */
-  enum State {
-    STATE_ERROR = -1,
-    STATE_IDLE = 0,
-    STATE_INIT = 1,
-    STATE_RUN = 2,
-  };
+  enum class State { STATE_ERROR, STATE_IDLE, STATE_INIT, STATE_RUN };
 
   /**
    *  Initialize the IMU Device.

@@ -27,29 +27,30 @@
 */
 #define DPS_TO_LSB (131.072f)
 
-SPI *ImuDeviceBmi160::mSpi = nullptr;
+const char ImuDeviceBmi160::SPI_DEVICE_NAME[] = "/dev/spidev3.0";
 
-ImuDeviceBmi160::ImuDeviceBmi160() : mState(STATE_IDLE), mSensor{0} {}
+SPI ImuDeviceBmi160::mSpi(SPI_DEVICE_NAME);
+
+ImuDeviceBmi160::ImuDeviceBmi160() : mState(State::STATE_IDLE), mSensor{0} {}
 
 ImuDeviceBmi160::~ImuDeviceBmi160() {}
 
 ImuDevice::Status ImuDeviceBmi160::init() {
   log_debug("%s", __func__);
-  setState(STATE_INIT);
+  setState(State::STATE_INIT);
   return Status::SUCCESS;
 }
 
 ImuDevice::Status ImuDeviceBmi160::uninit() {
   log_debug("%s", __func__);
-  setState(STATE_IDLE);
+  setState(State::STATE_IDLE);
   return Status::SUCCESS;
 }
 
 ImuDevice::Status ImuDeviceBmi160::start() {
   Status ret = Status::SUCCESS;
   log_debug("%s", __func__);
-  mSpi = new SPI("/dev/spidev3.0");
-  mSpi->init(0, 1 * 1000 * 1000);
+  mSpi.init(0, 1 * 1000 * 1000);
 
   /* You may assign a chip select identifier to be handled later */
   mSensor.id = 0;
@@ -84,25 +85,23 @@ ImuDevice::Status ImuDeviceBmi160::start() {
   /* Set the sensor configuration */
   retBmi = bmi160_set_sens_conf(&mSensor);
   if (retBmi != BMI160_OK) {
-    printf("sensor configuration failed\n");
+    log_error("sensor configuration failed\n");
     return Status::ERROR_UNKNOWN;
   }
 
-  setState(STATE_RUN);
+  setState(State::STATE_RUN);
   return Status::SUCCESS;
 }
 
 ImuDevice::Status ImuDeviceBmi160::stop() {
   log_debug("%s", __func__);
-  delete mSpi;
-  mSpi = nullptr;
-  setState(STATE_INIT);
+  setState(State::STATE_INIT);
   return Status::SUCCESS;
 }
 
 ImuDevice::Status ImuDeviceBmi160::read(ImuData &value) {
   Status ret = Status::SUCCESS;
-  if (STATE_RUN != getState()) {
+  if (State::STATE_RUN != getState()) {
     log_error("read() called in wrong state");
     assert(0);
     return Status::ERROR_UNKNOWN;
@@ -162,26 +161,26 @@ ImuDevice::Status ImuDeviceBmi160::setState(State state) {
   if (mState == state)
     return Status::SUCCESS;
 
-  if (state == STATE_ERROR) {
+  if (state == State::STATE_ERROR) {
     assert(0);
     mState = state;
     return Status::SUCCESS;
   }
 
   switch (mState) {
-  case STATE_IDLE:
-    if (state == STATE_INIT)
+  case State::STATE_IDLE:
+    if (state == State::STATE_INIT)
       mState = state;
     break;
-  case STATE_INIT:
-    if (state == STATE_IDLE || state == STATE_RUN)
+  case State::STATE_INIT:
+    if (state == State::STATE_IDLE || state == State::STATE_RUN)
       mState = state;
     break;
-  case STATE_RUN:
-    if (state == STATE_INIT)
+  case State::STATE_RUN:
+    if (state == State::STATE_INIT)
       mState = state;
     break;
-  case STATE_ERROR:
+  case State::STATE_ERROR:
     log_error("In Error State");
     // Free up resources, restart?
     break;
@@ -224,7 +223,7 @@ int8_t ImuDeviceBmi160::writeRegister(uint8_t dev_addr, uint8_t reg,
 
   buffer[0] = reg;
   buffer[1] = *data;
-  if (mSpi->transfer(buffer, 2, NULL, 0) != 2)
+  if (mSpi.transfer(buffer, 2, NULL, 0) != 2)
     ret = -1;
 
   return ret;
@@ -236,7 +235,7 @@ int8_t ImuDeviceBmi160::readRegister(uint8_t dev_addr, uint8_t reg,
 
   // log_debug("%x\n", reg & 0x7f);
   reg |= BMI160_READ_FLAG;
-  if (mSpi->transfer(&reg, 1, recv_buffer, recv_len) != (recv_len + 1))
+  if (mSpi.transfer(&reg, 1, recv_buffer, recv_len) != (recv_len + 1))
     ret = -1;
   return ret;
 }
