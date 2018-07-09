@@ -23,7 +23,7 @@ public:
   Status stop();
   Status read(ImuData &value);
   Status getCovariance(double &orient, double &angVel, double &linAccel);
-  State getState();
+  State getState() const;
 
 private:
   static const char SPI_DEVICE_NAME[];

@@ -197,7 +197,7 @@ ImuDevice::Status ImuDeviceBmi160::setState(State state) {
   return ret;
 }
 
-ImuDevice::State ImuDeviceBmi160::getState() {
+ImuDevice::State ImuDeviceBmi160::getState() const {
   // log_debug("%s", __func__);
   return mState;
 }

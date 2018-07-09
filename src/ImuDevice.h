@@ -99,7 +99,7 @@ public:
    *
    *  @return Status of request.
    */
-  virtual State getState() { return State::STATE_ERROR; }
+  virtual State getState() const { return State::STATE_ERROR; }
 
   /**
    *  Get covariances of the measurement from IMU device.
