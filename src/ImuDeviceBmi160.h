@@ -6,6 +6,7 @@
 #pragma once
 
 #include <atomic>
+#include <string>
 
 #include <bmi160.h>
 #include <bmi160_defs.h>
@@ -26,7 +27,7 @@ public:
   State getState() const;
 
 private:
-  static const char SPI_DEVICE_NAME[];
+  static const std::string SPI_DEVICE_NAME;
   Status setState(State state);
   static void delayMs(uint32_t period);
   static int8_t writeRegister(uint8_t dev_addr, uint8_t reg, uint8_t *data,
@@ -35,5 +36,5 @@ private:
                              uint8_t *recv_buffer, uint16_t recv_len);
   std::atomic<State> mState;
   struct bmi160_dev mSensor;
-  static SPI mSpi;
+  static SPI sSpi;
 };

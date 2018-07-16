@@ -27,9 +27,9 @@
 */
 #define DPS_TO_LSB (131.072f)
 
-const char ImuDeviceBmi160::SPI_DEVICE_NAME[] = "/dev/spidev3.0";
+const std::string ImuDeviceBmi160::SPI_DEVICE_NAME = "/dev/spidev3.0";
 
-SPI ImuDeviceBmi160::mSpi(SPI_DEVICE_NAME);
+SPI ImuDeviceBmi160::sSpi(SPI_DEVICE_NAME.c_str());
 
 ImuDeviceBmi160::ImuDeviceBmi160() : mState(State::STATE_IDLE), mSensor{0} {}
 
@@ -50,7 +50,7 @@ ImuDevice::Status ImuDeviceBmi160::uninit() {
 ImuDevice::Status ImuDeviceBmi160::start() {
   Status ret = Status::SUCCESS;
   log_debug("%s", __func__);
-  mSpi.init(0, 1 * 1000 * 1000);
+  sSpi.init(0, 1 * 1000 * 1000);
 
   /* You may assign a chip select identifier to be handled later */
   mSensor.id = 0;
@@ -223,7 +223,7 @@ int8_t ImuDeviceBmi160::writeRegister(uint8_t dev_addr, uint8_t reg,
 
   buffer[0] = reg;
   buffer[1] = *data;
-  if (mSpi.transfer(buffer, 2, NULL, 0) != 2)
+  if (sSpi.transfer(buffer, 2, NULL, 0) != 2)
     ret = -1;
 
   return ret;
@@ -235,7 +235,7 @@ int8_t ImuDeviceBmi160::readRegister(uint8_t dev_addr, uint8_t reg,
 
   // log_debug("%x\n", reg & 0x7f);
   reg |= BMI160_READ_FLAG;
-  if (mSpi.transfer(&reg, 1, recv_buffer, recv_len) != (recv_len + 1))
+  if (sSpi.transfer(&reg, 1, recv_buffer, recv_len) != (recv_len + 1))
     ret = -1;
   return ret;
 }

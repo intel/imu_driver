@@ -9,13 +9,9 @@
 #include <stdint.h>
 
 /**
- *  The ImuData class is used to hold the IMU data and meta-data
+ *  The ImuData structure is used to hold the IMU data and meta-data
  */
-class ImuData {
-public:
-  ImuData() {}
-  ~ImuData() {}
-
+struct ImuData {
   uint32_t sec = 0;  /**< system time in sec. */
   uint32_t nsec = 0; /**< system time in nano sec. */
   double accel[3];   /**< Linear acceleration in m/s^2. */
