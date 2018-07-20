@@ -32,7 +32,7 @@ ImuDriverNode::ImuDriverNode() : mNH("~") {
   ROS_INFO_STREAM("ROS Node imu_driver_node");
 
   // Create Node Publishers
-  mPubImuMsg = mNH.advertise<sensor_msgs::Imu>("imu/data_raw", 5);
+  mPubImuMsg = mNH.advertise<sensor_msgs::Imu>("/imu/data_raw", 5);
 
   // Create Node advertiseService
 
