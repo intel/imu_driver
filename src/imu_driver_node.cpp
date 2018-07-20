@@ -12,15 +12,18 @@
 
 class ImuDriverNode {
 public:
+  ImuDriverNode();
+  ~ImuDriverNode();
+  bool spin();
+
+private:
   ros::NodeHandle mNH;
   ros::Publisher mPubImuMsg;
   sensor_msgs::Imu mImuMsg;
   ImuDevice *mImuDev;
-  ImuDriverNode();
-  ~ImuDriverNode();
+
   int start();
   int stop();
-  bool spin();
   int pubData();
   int readData(sensor_msgs::Imu &data);
 };
