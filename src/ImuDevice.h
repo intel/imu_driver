@@ -54,6 +54,15 @@ public:
   enum class State { STATE_ERROR, STATE_IDLE, STATE_INIT, STATE_RUN };
 
   /**
+   *  The CoVariance structure
+   */
+  struct CoVariance {
+    double orientation = 0;     /**< Orientation */
+    double angularVelocity = 0; /**< Angular velocity */
+    double acceleration = 0;    /**< Linear acceleration */
+  };
+
+  /**
    *  Initialize the IMU Device.
    *
    *  @return Status of request.
@@ -106,8 +115,7 @@ public:
    *
    *  @return Status of request.
    */
-  virtual Status getCovariance(double &orient, double &angVel,
-                               double &linAccel) {
+  virtual Status getCovariance(CoVariance &coVariance) {
     return Status::NOT_SUPPORTED;
   }
 };

@@ -40,25 +40,22 @@ ImuDriverNode::ImuDriverNode(ros::NodeHandle &h) : mNH(h) {
   // Fill IMU Message with constants
   mImuMsg.header.frame_id = "imu";
 
-  double covOrient, covAngVel, covLinAccel;
-  if (mImuDev->getCovariance(covOrient, covAngVel, covLinAccel) !=
-      ImuDevice::Status::SUCCESS) {
-    covOrient = 0;
-    covAngVel = 0;
-    covLinAccel = 0;
+  struct ImuDevice::CoVariance cov;
+  if (mImuDev->getCovariance(cov) != ImuDevice::Status::SUCCESS) {
+    ROS_WARN("Using default covariances");
   }
 
-  mImuMsg.linear_acceleration_covariance[0] = covLinAccel;
-  mImuMsg.linear_acceleration_covariance[4] = covLinAccel;
-  mImuMsg.linear_acceleration_covariance[8] = covLinAccel;
+  mImuMsg.linear_acceleration_covariance[0] = cov.acceleration;
+  mImuMsg.linear_acceleration_covariance[4] = cov.acceleration;
+  mImuMsg.linear_acceleration_covariance[8] = cov.acceleration;
 
-  mImuMsg.angular_velocity_covariance[0] = covAngVel;
-  mImuMsg.angular_velocity_covariance[4] = covAngVel;
-  mImuMsg.angular_velocity_covariance[8] = covAngVel;
+  mImuMsg.angular_velocity_covariance[0] = cov.angularVelocity;
+  mImuMsg.angular_velocity_covariance[4] = cov.angularVelocity;
+  mImuMsg.angular_velocity_covariance[8] = cov.angularVelocity;
 
-  mImuMsg.orientation_covariance[0] = covOrient;
-  mImuMsg.orientation_covariance[4] = covOrient;
-  mImuMsg.orientation_covariance[8] = covOrient;
+  mImuMsg.orientation_covariance[0] = cov.orientation;
+  mImuMsg.orientation_covariance[4] = cov.orientation;
+  mImuMsg.orientation_covariance[8] = cov.orientation;
 }
 
 ImuDriverNode::~ImuDriverNode() {

@@ -202,12 +202,12 @@ ImuDevice::State ImuDeviceBmi160::getState() const {
   return mState;
 }
 
-ImuDevice::Status ImuDeviceBmi160::getCovariance(double &orient, double &angVel,
-                                                 double &linAccel) {
+ImuDevice::Status ImuDeviceBmi160::getCovariance(CoVariance &coVariance) {
   log_debug("%s", __func__);
-  orient = 0;
-  angVel = 0;
-  linAccel = 0;
+
+  coVariance.orientation = 0;
+  coVariance.angularVelocity = 0;
+  coVariance.acceleration = 0;
 
   return Status::SUCCESS;
 }

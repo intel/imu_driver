@@ -23,7 +23,7 @@ public:
   Status start();
   Status stop();
   Status read(ImuData &value);
-  Status getCovariance(double &orient, double &angVel, double &linAccel);
+  Status getCovariance(CoVariance &coVariance);
   State getState() const;
 
 private:
