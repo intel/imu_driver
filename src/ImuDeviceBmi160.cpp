@@ -48,7 +48,6 @@ ImuDevice::Status ImuDeviceBmi160::uninit() {
 }
 
 ImuDevice::Status ImuDeviceBmi160::start() {
-  Status ret = Status::SUCCESS;
   log_debug("%s", __func__);
   sSpi.init(0, 1 * 1000 * 1000);
 
@@ -100,7 +99,7 @@ ImuDevice::Status ImuDeviceBmi160::stop() {
 }
 
 ImuDevice::Status ImuDeviceBmi160::read(ImuData &value) {
-  Status ret = Status::SUCCESS;
+  auto ret = Status::SUCCESS;
   if (State::RUN != getState()) {
     log_error("read() called in wrong state");
     assert(0);
@@ -155,7 +154,7 @@ ImuDevice::Status ImuDeviceBmi160::read(ImuData &value) {
     IDLE <--> INIT <--> RUN
 */
 ImuDevice::Status ImuDeviceBmi160::setState(State state) {
-  Status ret = Status::SUCCESS;
+  auto ret = Status::SUCCESS;
   log_debug("%s", __func__);
 
   if (mState == state)
@@ -216,7 +215,7 @@ void ImuDeviceBmi160::delayMs(uint32_t period) { usleep(period * 1000); }
 
 int8_t ImuDeviceBmi160::writeRegister(uint8_t dev_addr, uint8_t reg,
                                       uint8_t *data, uint16_t len) {
-  int ret = 0;
+  auto ret = 0;
   uint8_t buffer[2];
 
   // log_debug("%x: %d\n", reg, *data);
@@ -231,7 +230,7 @@ int8_t ImuDeviceBmi160::writeRegister(uint8_t dev_addr, uint8_t reg,
 
 int8_t ImuDeviceBmi160::readRegister(uint8_t dev_addr, uint8_t reg,
                                      uint8_t *recv_buffer, uint16_t recv_len) {
-  int ret = 0;
+  auto ret = 0;
 
   // log_debug("%x\n", reg & 0x7f);
   reg |= BMI160_READ_FLAG;
