@@ -31,19 +31,19 @@ const std::string ImuDeviceBmi160::SPI_DEVICE_NAME = "/dev/spidev3.0";
 
 SPI ImuDeviceBmi160::sSpi(SPI_DEVICE_NAME.c_str());
 
-ImuDeviceBmi160::ImuDeviceBmi160() : mState(State::STATE_IDLE), mSensor{0} {}
+ImuDeviceBmi160::ImuDeviceBmi160() : mState(State::IDLE), mSensor{0} {}
 
 ImuDeviceBmi160::~ImuDeviceBmi160() {}
 
 ImuDevice::Status ImuDeviceBmi160::init() {
   log_debug("%s", __func__);
-  setState(State::STATE_INIT);
+  setState(State::INIT);
   return Status::SUCCESS;
 }
 
 ImuDevice::Status ImuDeviceBmi160::uninit() {
   log_debug("%s", __func__);
-  setState(State::STATE_IDLE);
+  setState(State::IDLE);
   return Status::SUCCESS;
 }
 
@@ -89,19 +89,19 @@ ImuDevice::Status ImuDeviceBmi160::start() {
     return Status::ERROR_UNKNOWN;
   }
 
-  setState(State::STATE_RUN);
+  setState(State::RUN);
   return Status::SUCCESS;
 }
 
 ImuDevice::Status ImuDeviceBmi160::stop() {
   log_debug("%s", __func__);
-  setState(State::STATE_INIT);
+  setState(State::INIT);
   return Status::SUCCESS;
 }
 
 ImuDevice::Status ImuDeviceBmi160::read(ImuData &value) {
   Status ret = Status::SUCCESS;
-  if (State::STATE_RUN != getState()) {
+  if (State::RUN != getState()) {
     log_error("read() called in wrong state");
     assert(0);
     return Status::ERROR_UNKNOWN;
@@ -161,26 +161,26 @@ ImuDevice::Status ImuDeviceBmi160::setState(State state) {
   if (mState == state)
     return Status::SUCCESS;
 
-  if (state == State::STATE_ERROR) {
+  if (state == State::ERROR) {
     assert(0);
     mState = state;
     return Status::SUCCESS;
   }
 
   switch (mState) {
-  case State::STATE_IDLE:
-    if (state == State::STATE_INIT)
+  case State::IDLE:
+    if (state == State::INIT)
       mState = state;
     break;
-  case State::STATE_INIT:
-    if (state == State::STATE_IDLE || state == State::STATE_RUN)
+  case State::INIT:
+    if (state == State::IDLE || state == State::RUN)
       mState = state;
     break;
-  case State::STATE_RUN:
-    if (state == State::STATE_INIT)
+  case State::RUN:
+    if (state == State::INIT)
       mState = state;
     break;
-  case State::STATE_ERROR:
+  case State::ERROR:
     log_error("In Error State");
     // Free up resources, restart?
     break;

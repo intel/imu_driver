@@ -51,7 +51,7 @@ public:
   /**
    *  Possible states of the object.
    */
-  enum class State { STATE_ERROR, STATE_IDLE, STATE_INIT, STATE_RUN };
+  enum class State { ERROR, IDLE, INIT, RUN };
 
   /**
    *  The CoVariance structure
@@ -104,7 +104,7 @@ public:
    *
    *  @return Status of request.
    */
-  virtual State getState() const { return State::STATE_ERROR; }
+  virtual State getState() const { return State::ERROR; }
 
   /**
    *  Get covariances of the measurement from IMU device.
