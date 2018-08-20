@@ -43,7 +43,7 @@ ImuDriverNode::ImuDriverNode() : mNH("~") {
   // Fill IMU Message with constants
   mImuMsg.header.frame_id = "imu";
 
-  struct ImuDevice::CoVariance cov;
+  ImuDevice::CoVariance cov;
   if (mImuDev->getCovariance(cov) != ImuDevice::Status::SUCCESS) {
     ROS_WARN("Using default covariances");
   }

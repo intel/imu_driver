@@ -201,7 +201,7 @@ ImuDevice::State ImuDeviceBmi160::getState() const {
   return mState;
 }
 
-ImuDevice::Status ImuDeviceBmi160::getCovariance(CoVariance &coVariance) {
+ImuDevice::Status ImuDeviceBmi160::getCovariance(CoVariance &coVariance) const {
   log_debug("%s", __func__);
 
   coVariance.orientation = 0;

@@ -115,7 +115,7 @@ public:
    *
    *  @return Status of request.
    */
-  virtual Status getCovariance(CoVariance &coVariance) {
+  virtual Status getCovariance(CoVariance &coVariance) const {
     return Status::NOT_SUPPORTED;
   }
 };
