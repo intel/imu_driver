@@ -12,24 +12,27 @@
 
 class ImuDriverNode {
 public:
+  ImuDriverNode();
+  ~ImuDriverNode();
+  bool spin();
+
+private:
   ros::NodeHandle mNH;
   ros::Publisher mPubImuMsg;
   sensor_msgs::Imu mImuMsg;
   ImuDevice *mImuDev;
-  ImuDriverNode(ros::NodeHandle &h);
-  ~ImuDriverNode();
+
   int start();
   int stop();
-  bool spin();
   int pubData();
   int readData(sensor_msgs::Imu &data);
 };
 
-ImuDriverNode::ImuDriverNode(ros::NodeHandle &h) : mNH(h) {
+ImuDriverNode::ImuDriverNode() : mNH("~") {
   ROS_INFO_STREAM("ROS Node imu_driver_node");
 
   // Create Node Publishers
-  mPubImuMsg = mNH.advertise<sensor_msgs::Imu>("imu/data_raw", 5);
+  mPubImuMsg = mNH.advertise<sensor_msgs::Imu>("/imu/data_raw", 5);
 
   // Create Node advertiseService
 
@@ -40,24 +43,22 @@ ImuDriverNode::ImuDriverNode(ros::NodeHandle &h) : mNH(h) {
   // Fill IMU Message with constants
   mImuMsg.header.frame_id = "imu";
 
-  double covOrient, covAngVel, covLinAccel;
-  if (mImuDev->getCovariance(covOrient, covAngVel, covLinAccel)) {
-    covOrient = 0;
-    covAngVel = 0;
-    covLinAccel = 0;
+  ImuDevice::CoVariance cov;
+  if (mImuDev->getCovariance(cov) != ImuDevice::Status::SUCCESS) {
+    ROS_WARN("Using default covariances");
   }
 
-  mImuMsg.linear_acceleration_covariance[0] = covLinAccel;
-  mImuMsg.linear_acceleration_covariance[4] = covLinAccel;
-  mImuMsg.linear_acceleration_covariance[8] = covLinAccel;
+  mImuMsg.linear_acceleration_covariance[0] = cov.acceleration;
+  mImuMsg.linear_acceleration_covariance[4] = cov.acceleration;
+  mImuMsg.linear_acceleration_covariance[8] = cov.acceleration;
 
-  mImuMsg.angular_velocity_covariance[0] = covAngVel;
-  mImuMsg.angular_velocity_covariance[4] = covAngVel;
-  mImuMsg.angular_velocity_covariance[8] = covAngVel;
+  mImuMsg.angular_velocity_covariance[0] = cov.angularVelocity;
+  mImuMsg.angular_velocity_covariance[4] = cov.angularVelocity;
+  mImuMsg.angular_velocity_covariance[8] = cov.angularVelocity;
 
-  mImuMsg.orientation_covariance[0] = covOrient;
-  mImuMsg.orientation_covariance[4] = covOrient;
-  mImuMsg.orientation_covariance[8] = covOrient;
+  mImuMsg.orientation_covariance[0] = cov.orientation;
+  mImuMsg.orientation_covariance[4] = cov.orientation;
+  mImuMsg.orientation_covariance[8] = cov.orientation;
 }
 
 ImuDriverNode::~ImuDriverNode() {
@@ -155,9 +156,7 @@ int main(int argc, char **argv) {
   // Initialize the ROS system
   ros::init(argc, argv, "imu_driver");
 
-  ros::NodeHandle nh;
-
-  ImuDriverNode idn(nh);
+  ImuDriverNode idn;
   idn.spin();
 
   return (0);
