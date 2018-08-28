@@ -15,7 +15,11 @@
   printf("[Warn] ");                                                           \
   printf(fmt, ##__VA_ARGS__);                                                  \
   printf("\n")
+#ifdef DEBUG
 #define log_debug(fmt, ...)                                                    \
   printf("[Debug] ");                                                          \
   printf(fmt, ##__VA_ARGS__);                                                  \
   printf("\n")
+#else
+#define log_debug(fmt, ...)
+#endif

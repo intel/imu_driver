@@ -21,6 +21,12 @@ include_directories(
   modules/BMI160_driver
 )
 
+option(DEFINE_DEBUG
+  "Build the project with debug logs enabled"
+  OFF)
+if(DEFINE_DEBUG)
+  add_definitions(-DDEBUG)
+endif()
 
 add_executable(${PROJECT_NAME}_node src/imu_driver_node.cpp src/ImuDeviceBmi160.cpp src/spi.cpp modules/BMI160_driver/bmi160.c)
 
