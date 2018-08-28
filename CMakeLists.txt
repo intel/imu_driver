@@ -24,6 +24,10 @@ include_directories(
 
 add_executable(${PROJECT_NAME}_node src/imu_driver_node.cpp src/ImuDeviceBmi160.cpp src/spi.cpp modules/BMI160_driver/bmi160.c)
 
+if(CATKIN_ENABLE_TESTING)
+  catkin_add_gtest(utest test/utest.cpp src/ImuDeviceBmi160.cpp src/spi.cpp modules/BMI160_driver/bmi160.c)
+  target_link_libraries(utest ${catkin_LIBRARIES})
+endif()
 target_link_libraries(${PROJECT_NAME}_node
   ${catkin_LIBRARIES}
 )
