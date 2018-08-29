@@ -19,6 +19,12 @@ ROS driver for IMU sensor devices
 `$ rosrun imu_driver imu_driver_node`
 
 ## How to Test
-In another terminal run below command and check if you can see the topics `imu_driver/*`
+1. Run following command and whether IMU ROS topics `imu_driver/*` are listed
 
-`$ rostopic list`
+   `$ rostopic list`
+
+2. Run following command and check whether all GTests are passed
+
+   `$ catkin run_tests imu_driver`
+   
+   `$ catkin_test_results imu_driver`
