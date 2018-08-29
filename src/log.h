@@ -8,14 +8,18 @@
 #include <cstdio>
 
 #define log_error(fmt, ...)                                                    \
-  printf("[Error] ");                                                          \
-  printf(fmt, ##__VA_ARGS__);                                                  \
-  printf("\n")
+  fprintf(stderr, "[Error] ");                                                 \
+  fprintf(stderr, fmt, ##__VA_ARGS__);                                         \
+  fprintf(stderr, "\n")
 #define log_warn(fmt, ...)                                                     \
-  printf("[Warn] ");                                                           \
-  printf(fmt, ##__VA_ARGS__);                                                  \
-  printf("\n")
+  fprintf(stderr, "[Warn] ");                                                  \
+  fprintf(stderr, fmt, ##__VA_ARGS__);                                         \
+  fprintf(stderr, "\n")
+#ifdef DEBUG
 #define log_debug(fmt, ...)                                                    \
-  printf("[Debug] ");                                                          \
-  printf(fmt, ##__VA_ARGS__);                                                  \
-  printf("\n")
+  fprintf(stdout, "[Debug] ");                                                 \
+  fprintf(stdout, fmt, ##__VA_ARGS__);                                         \
+  fprintf(stdout, "\n")
+#else
+#define log_debug(fmt, ...)
+#endif
