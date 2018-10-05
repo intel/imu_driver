@@ -28,3 +28,5 @@ ROS driver for IMU sensor devices
    `$ catkin run_tests imu_driver`
    
    `$ catkin_test_results imu_driver`
+
+###### *Any security issue should be reported using process at https://01.org/security*
